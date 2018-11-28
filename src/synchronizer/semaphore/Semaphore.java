@@ -41,4 +41,19 @@ public class Semaphore {
     public int availablePermits(){
         return tokens;
     }
+
+    public void acquireUninterruptibly(){
+        synchronized (this){
+            if(checkAndDispenceToken()) return;
+
+            while(true){
+                try {
+                    this.wait();
+                    if(checkAndDispenceToken()) return;
+                } catch (InterruptedException e) {}
+            }
+
+        }
+    }
 }
+
