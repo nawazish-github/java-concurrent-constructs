@@ -37,4 +37,8 @@ public class Semaphore {
             this.notifyAll();
         }
     }
+
+    public int availablePermits(){
+        return tokens;
+    }
 }
