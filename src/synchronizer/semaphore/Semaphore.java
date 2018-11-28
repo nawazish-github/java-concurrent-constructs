@@ -14,19 +14,21 @@ public class Semaphore {
     public void acquire() throws InterruptedException {
         if (Thread.currentThread().isInterrupted()) throw new InterruptedException();
         synchronized (this){
-            if (tokens > 0){
-                --tokens;
-                return;
-            }
+            if (checkAndDispenceToken()) return;
 
             while(true){
                 this.wait();
-                if (tokens > 0){
-                    --tokens;
-                    return;
-                }
+                if (checkAndDispenceToken()) return;
             }
         }
+    }
+
+    private boolean checkAndDispenceToken() {
+        if (tokens > 0) {
+            --tokens;
+            return true;
+        }
+        return false;
     }
 
     public synchronized void release(){
@@ -34,6 +36,5 @@ public class Semaphore {
             ++tokens;
             this.notifyAll();
         }
-        return;
     }
 }
