@@ -11,26 +11,20 @@ public class Semaphore {
         this.tokens=tokens;
     }
 
-    public synchronized void acquire() {
-        if (tokens > 0){
-            --tokens;
-            System.out.println("Thread got token: "+Thread.currentThread().getName()+". Token count: "+tokens);
-            return;
-        }
-
-        while(true){
-            try {
-                System.out.println("Thread blocked for token: "+Thread.currentThread().getName()+". Token count: "+tokens);
-                this.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                Thread.currentThread().interrupt();
-                return;
-            }
+    public void acquire() throws InterruptedException {
+        if (Thread.currentThread().isInterrupted()) throw new InterruptedException();
+        synchronized (this){
             if (tokens > 0){
                 --tokens;
-                System.out.println("Thread got token: "+Thread.currentThread().getName()+". Token count: "+tokens);
                 return;
+            }
+
+            while(true){
+                this.wait();
+                if (tokens > 0){
+                    --tokens;
+                    return;
+                }
             }
         }
     }
@@ -38,7 +32,6 @@ public class Semaphore {
     public synchronized void release(){
         if(tokens<5){
             ++tokens;
-            System.out.println("Thread released token: "+Thread.currentThread().getName()+". Token count: "+tokens);
             this.notifyAll();
         }
         return;
