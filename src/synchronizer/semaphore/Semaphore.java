@@ -1,5 +1,7 @@
 package synchronizer.semaphore;
 
+import java.util.concurrent.TimeUnit;
+
 public class Semaphore {
     private int tokens;
 
@@ -53,6 +55,31 @@ public class Semaphore {
                 } catch (InterruptedException e) {}
             }
 
+        }
+    }
+
+    public boolean tryAcquire(){
+        synchronized (this){
+           return checkAndDispenceToken();
+        }
+    }
+
+    public boolean tryAcquire(long timeout,
+                              TimeUnit unit)
+            throws InterruptedException{
+
+        if (Thread.currentThread().isInterrupted())
+            throw new InterruptedException();
+
+        synchronized (this){
+            boolean status = checkAndDispenceToken();
+                if (!status){
+                    long expiryTime =  unit.toMillis(timeout);
+                    this.wait(expiryTime);
+                    status = checkAndDispenceToken();
+                    return status;
+                }else
+                    return status;
         }
     }
 }
