@@ -14,9 +14,11 @@ The idea is to re-implement all concurrency constructs available in the standard
                     <b>Semaphore</b>
                     <ol>
                         <li>acquire()</li>
+                        <li>acquireUninterruptibly()</li>
                         <li>release()</li>
                         <li>tryAcquire()</li>
                         <li>tryAcquire(long, TimeUnit)</li>
+                        <li>availablePermits()</li>
                     </ol>
                 </code>
             </li>
